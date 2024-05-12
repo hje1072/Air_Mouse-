@@ -13,4 +13,4 @@
 - Python 3.8+
 - OpenCV
 - MediaPipe
-
+- pyautogui
