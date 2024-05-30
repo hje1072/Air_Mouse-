@@ -7,9 +7,48 @@ import pyautogui
 
 max_num_hands = 1
 gesture = {
+    0:'direction', 1:'direction', 2:'double click', 3:'three', 4:'click', 5:'menu',
+    6:'six', 7:'direction', 8:'spiderman', 9:'direction', 10:'volume',
+}
+
+'''
+gesture = {
     0:'fist', 1:'one', 2:'two', 3:'three', 4:'four', 5:'five',
     6:'six', 7:'rock', 8:'spiderman', 9:'yeah', 10:'ok',
 }
+
+
+'''
+
+#ok 제스쳐 마우스 속도 
+#volume 으로서 z 이용해서 z가 가까워지면 느리게
+#z가 멀어지면 빠르게/.
+
+
+#one 마우스 움직이기 
+
+#two 마우스  더블클릭
+
+#four 마우스 클릭
+
+#three 는 애매함.
+
+#
+
+
+'''movig gesture 관리하기.'''
+
+#모든 동작은 menu 상태에서 동작.
+
+#whleel 손 흔들기
+
+
+#recovery 뒤로가기.
+
+#스페이스바. 쿵쿵 누르기
+
+
+
 
 #클릭버트용도로 쓸예정.
 click_set_gesture = { 3:'doubleClick' , 4 : 'click', 5 :'click_set',  9:'yeah'} #잠시 빼놓음
@@ -18,8 +57,6 @@ click_gesture = {4 : 'click'}
 click_pressure = True
 
 
-#ok싸인 시 프로그램 종료
-OK = False
 
 
 # MediaPipe hands model
@@ -31,6 +68,7 @@ hands = mp_hands.Hands(
     min_tracking_confidence=0.5)
 
 
+
 #knn 방식을 이용해서 제스쳐들을 나누기.
 # Gesture recognition model
 file = np.genfromtxt('data/gesture_train.csv', delimiter=',')
@@ -39,7 +77,11 @@ label = file[:, -1].astype(np.float32)
 knn = cv2.ml.KNearest_create()
 knn.train(angle, cv2.ml.ROW_SAMPLE, label)
 
+
+
+#비디오 영상 불러오기.
 cap = cv2.VideoCapture(0)
+
 
 while cap.isOpened():
     ret, img = cap.read()
@@ -103,8 +145,8 @@ while cap.isOpened():
             else :
                 
                 if (idx in click_gesture) and click_pressure :
-                    pyautogui.click()
-                    
+                    #pyautogui.click()
+                    pyautogui.scroll(-300)
                     
                     
                     
@@ -112,20 +154,18 @@ while cap.isOpened():
                 
                
             
-            #ok 싸인일때 프로그램 종료
-            if idx == 10:
-                OK = True
             
             
             
             
-            # Other gestures
+            
+            # 무슨 제스쳐를 하고있는지 체크용.
             cv2.putText(img, text=gesture[idx].upper(), org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
             
             mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)
 
     cv2.imshow('Game', img)
-    if cv2.waitKey(1) == ord('q') or OK:
+    if cv2.waitKey(1) == ord('q'):
         break
     
     
