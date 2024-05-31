@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+from tensorflow.keras.models import load_model
 
 #키보드 마우스조종용도
 import pyautogui
@@ -8,7 +9,7 @@ import pyautogui
 max_num_hands = 1
 gesture = {
     0:'direction', 1:'direction', 2:'double click', 3:'three', 4:'click', 5:'menu',
-    6:'six', 7:'direction', 8:'spiderman', 9:'direction', 10:'volume',
+    6:'volume', 7:'direction', 8:'spiderman', 9:'direction', 10:'ok',
 }
 
 '''
@@ -20,6 +21,12 @@ gesture = {
 
 '''
 
+#제스쳐 모델 넣어주기
+actions = ['push', 'hand_shake', 'spin']
+seq_length = 30
+
+#model = load_model('models/model.keras')
+
 #ok 제스쳐 마우스 속도 
 #volume 으로서 z 이용해서 z가 가까워지면 느리게
 #z가 멀어지면 빠르게/.
@@ -29,9 +36,9 @@ gesture = {
 
 #two 마우스  더블클릭
 
-#four 마우스 클릭
+#four 마우스 클릭이자 
 
-#three 는 애매함.
+#three 는 볼륨 체크.
 
 #
 
@@ -40,23 +47,45 @@ gesture = {
 
 #모든 동작은 menu 상태에서 동작.
 
-#whleel 손 흔들기
+#whleel 손 흔들기 hand_shake : 숏츠 넘기기
 
 
-#recovery 뒤로가기.
+#recovery 뒤로가기. spin : 이전으로 가기
 
-#스페이스바. 쿵쿵 누르기
-
-
+#스페이스바. 쿵쿵 누르기  push : 스페이스바.
 
 
-#클릭버트용도로 쓸예정.
-click_set_gesture = { 3:'doubleClick' , 4 : 'click', 5 :'click_set',  9:'yeah'} #잠시 빼놓음
+
+
+#이벤트 중첩 실행 방지용으로 쓸예정.
+event_gesture = { 2:'더블클릭' , 4 : '클릭', 5 :'대기상태', 3 : '스피드조절',  10:'제스쳐확인.'} 
 
 click_gesture = {4 : 'click'}
-click_pressure = True
+buffer = True
+
+buffer_delay = 0
 
 
+#하고싶은 이벤트가 맞는지 체크.
+event_check = 0
+prev = 9999999
+
+
+#스피드 체크용으로 쓸 예정.
+mutual_exclusive = False
+
+speed = 300
+
+#스피드 조절용
+def calculate_speed(n):
+    if n < 1:
+        return 100
+    elif n >= 10:
+        return 500
+    else:
+        # 선형 그래프 식으로 speed 계산
+        speed = 100 + (n - 1) * (500 - 100) / (10 - 1)
+        return speed
 
 
 # MediaPipe hands model
@@ -127,32 +156,88 @@ while cap.isOpened():
                 cv2.putText(img, text=rps_gesture[idx].upper(), org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
 
             '''
-            print(idx)
+           # print(idx)
             
             #마우스 조종을 위한 데이터 뽑기
             검지_시작 = res.landmark[8]
             검지_끝 = res.landmark[5]
             
-            print((검지_시작.x - 검지_끝.x))
+            #print((검지_시작.x - 검지_끝.x))
             
+            #print(검지_끝.z)
             
-            if idx not in click_set_gesture :    
+            if (idx not in event_gesture) and (mutual_exclusive == False) :    
                 
-                pyautogui.move((검지_시작.x - 검지_끝.x)*300, (검지_시작.y - 검지_끝.y)*300)
-                click_pressure = True #연타방지용
+                #마우스 조종 파트.
                 
+                pyautogui.move((검지_시작.x - 검지_끝.x)*speed, (검지_시작.y - 검지_끝.y)*speed)
+                
+                
+                buffer = True #연타방지용
+                buffer_delay = 0
             
             else :
                 
-                if (idx in click_gesture) and click_pressure :
-                    #pyautogui.click()
-                    pyautogui.scroll(-300)
+                #0.3초동안 그 동작을 유지하면 그 제스쳐에 해당하는 기능 수행
+                if idx == prev and idx != 5:
+                    event_check += 1
                     
+                    if event_check >= 20 :
+                        event_check = 0
+                        event_key = idx
+                else :
                     
-                    
-                    click_pressure = False #연타방지용
+                    #0.5초 안넘으면 대기 
+                    event_check = 0
+                    event_key = 5
+                    prev = idx
                 
-               
+                
+                
+                
+                #볼륨 조절
+                if (event_key == 3) or mutual_exclusive :
+                    mutual_exclusive = True
+                    
+                    
+                    
+                    #print(  abs(검지_끝.z * 100) )
+                    speed = calculate_speed(abs(검지_끝.z * 100))
+                    cv2.putText(img, f'Now Speed => {speed}', org=(10, 30), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+                    
+                    if  event_key == 10 :  mutual_exclusive = False
+
+                
+                
+                #원클릭
+                elif (event_key == 4) and buffer :
+                    pyautogui.click()
+                    #pyautogui.scroll(-300)
+                    
+                    buffer = False #연타방지용
+                
+                #더블클릭
+                elif (event_key == 2) and buffer :
+                    pyautogui.click()
+                    pyautogui.click()
+                
+                    buffer = False #연타방지용
+                
+                
+                
+                
+                else : #event 메뉴 대기 화면 주기적으로 buffer를 True로 변경해줌.
+                    
+                    cv2.putText(img, 'Waiting for the event...', org=(10, 30), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
+
+                    
+                    buffer_delay += 1
+                    
+                    
+                    if buffer_delay >= 30 : 
+                        buffer = True
+                        buffer_delay = 0
+                        
             
             
             
