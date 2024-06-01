@@ -15,3 +15,4 @@
 - MediaPipe
 - pyautogui
 - pycaw
+- tensorflow
