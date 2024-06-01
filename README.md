@@ -14,3 +14,4 @@
 - OpenCV
 - MediaPipe
 - pyautogui
+- pycaw
