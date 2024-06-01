@@ -14,3 +14,5 @@
 - OpenCV
 - MediaPipe
 - pyautogui
+- pycaw
+- tensorflow
