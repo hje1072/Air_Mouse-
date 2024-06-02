@@ -13,14 +13,7 @@ gesture = {
     6:'movig_gesture', 7:'direction', 8:'volume', 9:'direction', 10:'ok',
 }
 
-'''
-gesture = {
-    0:'fist', 1:'one', 2:'two', 3:'three', 4:'four', 5:'five',
-    6:'six', 7:'rock', 8:'spiderman', 9:'yeah', 10:'ok',
-}
 
-
-'''
 
 #Q 종료시퀀스용
 Q = False
@@ -42,7 +35,7 @@ model = load_model('models/model.keras')
 
 #two 마우스  더블클릭
 
-#four 마우스 클릭이자 
+#four 마우스 클릭
 
 #three 는 스피드 체크.
 
@@ -71,12 +64,12 @@ def beepsound():
 
 #모든 동작은 menu 상태에서 동작.
 
-#whleel 손 흔들기 hand_shake : 숏츠 넘기기
+#whleel 손 흔들기 hand_shake : 프로그램종료
 
 
 #recovery 뒤로가기. spin : 이전으로 가기
 
-#스페이스바. 쿵쿵 누르기  push : 스페이스바.
+#스페이스바. 쿵쿵 누르기  push : 숏츠넘기기
 
 
 
@@ -141,15 +134,6 @@ def set_volume(level):
     volume.SetMasterVolumeLevelScalar(level, None)
 
 
-def get_current_volume():
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(
-        IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-    volume = cast(interface, POINTER(IAudioEndpointVolume))
-
-    current_volume = volume.GetMasterVolumeLevelScalar()
-    return current_volume
-
 
 # MediaPipe hands model
 mp_hands = mp.solutions.hands
@@ -189,6 +173,9 @@ while cap.isOpened():
 
     if result.multi_hand_landmarks is not None:
         for res in result.multi_hand_landmarks:
+            
+            #손가락 마디마디사이의 각도를 이용해 어떤 제스처인지 파악
+            
             joint = np.zeros((21, 4))
             for j, lm in enumerate(res.landmark):
                 joint[j] = [lm.x, lm.y, lm.z, lm.visibility]
@@ -216,7 +203,7 @@ while cap.isOpened():
             
             
             
-            #제스처 인식 
+            #움직이는 제스처 인식 
             
             if gesture_check :
             
@@ -339,7 +326,7 @@ while cap.isOpened():
                         
                         #이벤트에 맞는 행동 이후 나가기. 
                         #각각에 맞는 이벤트 넣어주기.
-                        #TODO
+                        
                         if gesture_check == False :
                             
                             #숏츠 내리기
@@ -428,8 +415,6 @@ while cap.isOpened():
                         buffer = True
                         buffer_delay = 0
                         
-            
-            
             
             
             
