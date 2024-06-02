@@ -134,3 +134,11 @@ https://github.com/hje1072/Air_Mouse-/assets/71210590/87d4969c-9b80-47f8-a7f7-e1
 - pyautogui
 - pycaw
 - tensorflow 
+
+
+
+## 참고 자료들
+
+- https://github.com/kairess/Rock-Paper-Scissors-Machine
+
+- https://github.com/kairess/gesture-recognition
