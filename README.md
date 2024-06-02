@@ -119,7 +119,7 @@ https://github.com/hje1072/Air_Mouse-/assets/71210590/87d4969c-9b80-47f8-a7f7-e1
 
 **create_dataset.py**
 
-훈련시킬 무빙제스처 만들기 
+훈련시킬 무빙제스처 만들기 (만일 무빙제스처 인식이 잘 안된다면 다시 DATA셋을 만들어 모델을 학습시키자.)
 
 **train.ipynb**
 
