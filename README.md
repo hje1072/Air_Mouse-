@@ -1,5 +1,23 @@
 # Air_Mouse: 손동작 인식을 통한 비접촉식 커서 조작 시스템
 
+![A_photo_of_a_delicious_late-night_snack_spread _Th](https://github.com/hje1072/Air_Mouse-/assets/71210590/0989d3f1-3f2a-4b60-86c0-0f423d1673de)
+
+ 오늘도 하루를 마치고 맛있게 먹는 야식!!! 너무나도 기분이 좋은 나머지 손으로 덥석덥석 집어 먹은 당신입니다.    
+야식을 먹는동안 눈도 호강시켜주기 위해 컴퓨터를 키는 당신.. 그러나 문제가 발생하는데..
+
+
+![A_photo_of_a_person's_hands_that_are_dirty_from_ea](https://github.com/hje1072/Air_Mouse-/assets/71210590/c2fab9f1-e8fb-4c60-9610-4be458f65c8d)
+
+ 이런!! 손이 너무 더러워서 유튜브를 보고싶지만 마우스와 키보드를 만지기 너무 껄끄러운 상황이군요!!!
+ 이럴때에 아이언맨처럼 공중에 제스처를 취하는 것으로 마우스와 키보드를 조절할 수있다면 좋을텐데 말이죠.. 
+
+![image](https://github.com/hje1072/Air_Mouse-/assets/71210590/f125b54b-58f3-406f-9494-7a4cfd73b6b5)
+
+ 앗 그래요!! 한번 마우스를 직접 만지지않고 조절하는 프로그램을 만들어놓은다면 어떨까요!! 
+
+ 
+
+
 ## 프로젝트 소개
 - MediaPipe와 OpenCV 라이브러리를 결합하여 손동작 인식 기능을 활용한 비접촉식 커서 조작 시스템을 구현
 - 사용자는 손동작만으로 컴퓨터 화면 상의 커서를 자유롭게 조종
