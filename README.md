@@ -7,6 +7,10 @@
 - LSTM 과 MediaPipe 를 이용한 moving 제스처 인식 및 moving 제스처에 맞는 작업 수행
 
 
+**간단한 프리뷰**
+
+https://github.com/hje1072/Air_Mouse-/assets/71210590/f22e8780-0fb0-43f0-bd66-cce858fece75
+
 
 ## 파일 소개
 간단한 파일 소개
